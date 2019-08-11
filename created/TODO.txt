@@ -1,0 +1,48 @@
+TO DO:
+
+Offense:
+
+-- Roach --> Ravager?
+-- Zergling to baneling?
+
+-- phase out early units like zerglings?
+	-- Algorithm for determining when to produce what unit?
+	-- could be a simple unit count -> if army gets destroyed build
+	   zergling swarm first
+-- upgrade the fitness function for target prioritization
+	--> 
+-- upgrade algorithm to protect higher value units such as mutalisks and brood
+	lords...
+	--> kiting during cool down for mutas...
+-- place swarm function into separate thread to increase parallelism
+-- overlord scouting? <-- short term solution
+-- swarm scouting?? <--- ***
+	-- figure out how to increase dispersion
+
+-- Need logic for drones to defend themselves against an early rush
+	--> if army under certain size place drones and queen into swarm
+
+
+** swarm algorithm
+	+ clustering of allies should raise fitness when enemies are spotted -
+		have a threshold to prevent unconcentrated attacks
+	+ if no enemies located, clustering of allies should lower fitness
+		? How to reconcile this with the current logic of moving to
+			best fit neighbor...
+	+ 
+
+
+
+
+Long term:
+	--upgrade swarm algorithm
+	-- integrate machine learning techniques, either NN or GA
+
+
+Economy and infrastructure:
+
+-- resolve issue with queens not distributing equally...
+-- upgrade research
+-- creep spread method
+-- static defense construction and relocation logic
+-- additional hatcheries?
