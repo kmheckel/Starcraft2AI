@@ -14,24 +14,33 @@ Offense:
 -- upgrade algorithm to protect higher value units such as mutalisks and brood
 	lords...
 	--> kiting during cool down for mutas...
--- place swarm function into separate thread to increase parallelism
--- overlord scouting? <-- short term solution
+
+{{{
+-- overlord scouting?
+	++ make overlords distrivute themselves over expansions and place one at map
+center?
+
 -- swarm scouting?? <--- ***
-	-- figure out how to increase dispersion
+	-- use multiswarm architecture and use cooperation between overlord
+		swarm and mutas?
+}}}
 
 -- Need logic for drones to defend themselves against an early rush
 	--> if army under certain size place drones and queen into swarm
 
 
 ** swarm algorithm
+	+++I GOT A LEGIT PSO TO DRIVE THE MUTAS!!!!!!!!! OH YEAH!!!!
 	+ clustering of allies should raise fitness when enemies are spotted -
 		have a threshold to prevent unconcentrated attacks
-	+ if no enemies located, clustering of allies should lower fitness
-		? How to reconcile this with the current logic of moving to
-			best fit neighbor...
-	+ 
-
-
+	+ fitness function needs improved.
+	+ mutas in range of an enemy, given favorable conditions, should stay
+		and fight.. this means the cost should be very low, and the
+		logical layer has to match the physical...
+	+ generalize algo to all flying units (mutas, corruptors, brood lords)
+	+ consider implementing the multiprocessing features if beneficial...
+		although current troop counts haven't induced lag,
+		parallelization might enable more advanced cost functions
 
 
 Long term:
@@ -41,8 +50,10 @@ Long term:
 
 Economy and infrastructure:
 
--- resolve issue with queens not distributing equally...
+-- Dynamic army composition???
+-- resolve issue with queens not distributing equally... --> low priority..
 -- upgrade research
 -- creep spread method
 -- static defense construction and relocation logic
 -- additional hatcheries?
+-- more queens

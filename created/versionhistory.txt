@@ -23,6 +23,6 @@ Legion_v1-2:
 		Protoss due to constant threat picture leading to troops
 		rushing relatively small but competent army with lings one at a time until
 		loss... :(
-	+++ recommend investigation of multithreading, subswarming, uprgrade
-		the fitness function.
+	+++ recommend investigation of (multithreading), <subswarming>, [uprgrade
+		the fitness function], {unit upgrades, revise army composition}
 

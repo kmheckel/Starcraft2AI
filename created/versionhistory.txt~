@@ -8,5 +8,21 @@ Legion_v1-0:
 Legion_v1-2:
 	-- expanded economy to build and maintain a fixed ratio of lings,
 		roaches, corruptors, mutas, and brood lords
+		
+		+++ army composition winds up majority lings and roaches with
+			few mutas...
+		+++  Consider Ravager addition to army
 	-- reworked construction order to build spawning pool and troops
-		earlier	
+		earlier
+	-- Added rudimentary scotuing logic where the swarm algo is turned off
+		unless enemies are spotted, otherwise wait until 90 troops in
+		swarm and head to random enemy spawn... --> problem when there
+		are more than one spawn would lead to oscillation in the middle...	
+	-- Fitness function still basic...
+	*** Won 1 match against all three stock HARD AIs, lost one round to
+		Protoss due to constant threat picture leading to troops
+		rushing relatively small but competent army with lings one at a time until
+		loss... :(
+	+++ recommend investigation of multithreading, subswarming, uprgrade
+		the fitness function.
+

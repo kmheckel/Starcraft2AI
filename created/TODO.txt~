@@ -15,9 +15,36 @@ Offense:
 	lords...
 	--> kiting during cool down for mutas...
 -- place swarm function into separate thread to increase parallelism
--- overlord scouting? <-- short term solution
+	-- Use multiprocessing library/module to avoid GIL
+	-- might have to create an intermediate function for MultiPro 
+	to call, with the new function making await attack() calls
+		-- make sure to daemonize/resolve how to end the attack()
+		call once the bot/game finishes to avoid infinite loop.
+
+-- overlord scouting?
+++ make overlords distrivute themselves over expansions and place one at map
+center?
+
+
 -- swarm scouting?? <--- ***
 	-- figure out how to increase dispersion
+	-- figure out how to visit enemy potential bases without
+		oscillating...
+
+-- Need logic for drones to defend themselves against an early rush
+	--> if army under certain size place drones and queen into swarm
+
+
+** swarm algorithm
+	+ clustering of allies should raise fitness when enemies are spotted -
+		have a threshold to prevent unconcentrated attacks
+	+ if no enemies located, clustering of allies should lower fitness
+		? How to reconcile this with the current logic of moving to
+			best fit neighbor...
+	+ 
+
+
+
 
 Long term:
 	--upgrade swarm algorithm
