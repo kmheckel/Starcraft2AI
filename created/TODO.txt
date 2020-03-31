@@ -3,30 +3,25 @@ TO DO:
 Offense:
 
 -- Roach --> Ravager?
--- Zergling to baneling?
+
+Hydralisks... Need them to augment roaches probably...
 
 -- phase out early units like zerglings?
 	-- Algorithm for determining when to produce what unit?
 	-- could be a simple unit count -> if army gets destroyed build
 	   zergling swarm first
--- upgrade the fitness function for target prioritization
-	--> 
--- upgrade algorithm to protect higher value units such as mutalisks and brood
-	lords...
-	--> kiting during cool down for mutas...
 
-{{{
--- overlord scouting?
-	++ make overlords distrivute themselves over expansions and place one at map
-center?
 
--- swarm scouting?? <--- ***
-	-- use multiswarm architecture and use cooperation between overlord
-		swarm and mutas?
-}}}
 
 -- Need logic for drones to defend themselves against an early rush
 	--> if army under certain size place drones and queen into swarm
+
+-- defense logic not working at all....
+
+-- investigate a strategy/logic of spine crawler/queen garrison force for
+early game...
+	--> queens provide AA and cast transfusion on the spinecrawlers which
+defend the queens at long range on ground...
 
 
 ** swarm algorithm
@@ -42,18 +37,32 @@ center?
 		although current troop counts haven't induced lag,
 		parallelization might enable more advanced cost functions
 
+-- upgrade the fitness function for target prioritization
+--> 
+-- upgrade algorithm to protect higher value units such as mutalisks and brood
+lords...
+--> kiting during cool down for mutas.
+
+
+
 
 Long term:
 	--upgrade swarm algorithm
-	-- integrate machine learning techniques, either NN or GA
+		? multilayer/sub-swarms
+		? some kind of "neural swarm" that uses the mutalisk's
+			logical positions to feed a neural net?
+	-- integrate machine learning techniques, either NN or GA to tune
+		hyperparameters or adjust army composition...
 
 
 Economy and infrastructure:
 
--- Dynamic army composition???
--- resolve issue with queens not distributing equally... --> low priority..
--- upgrade research
--- creep spread method
--- static defense construction and relocation logic
+implement a more intelligent basis for expansion timing...
+
+-- upgrade research --> in the works..
+
+-- creep spread method **
+-- static defense construction and relocation logic --> see garrison idea
 -- additional hatcheries?
--- more queens
+-- more queens -- > see garrison. garrison queens can also facilitate creep
+	coverage

@@ -33,13 +33,13 @@ class Legion(sc2.BotAI):
         await self.build_extractor()
         await self.build_offensive_buildings()
         await self.expand()
-        await self.upgrade()
         await self.build_swarm()
+        await self.defend()
         if self.units(MUTALISK).exists and iteration % 5 == 0:
             await self.attack(self.units(MUTALISK), iteration)
 #        if self.units(ZERGLING).amount > 35 and iteration % 10 == 0:
 #           await self.attack(self.units(ZERGLING))
-        if self.units(ROACH).amount > 5 and iteration % 4 == 0:
+        if self.units(ROACH).amount > 15 and iteration % 10 == 0:
             await self.attack(self.units(ROACH), iteration)
 
     # figure out a way for the overlords to not send themselves to their death... 
@@ -57,15 +57,9 @@ class Legion(sc2.BotAI):
         if self.can_afford(SPAWNINGPOOL) and not self.units(SPAWNINGPOOL).exists and not self.already_pending(SPAWNINGPOOL):
             await self.build(SPAWNINGPOOL, near=hatcheries.first)
             return
-        # I want to build this near the main ramp...
-#        if self.can_afford(SPINECRAWLER) and self.units(SPINECRAWLER).amount < 4:
-#            await self.build(SPINECRAWLER, near=hatcheries.first, max_distance=8)
-#            return
         if self.can_afford(ROACHWARREN) and self.units(SPAWNINGPOOL).ready and not self.units(ROACHWARREN).exists and not self.already_pending(ROACHWARREN):
             await self.build(ROACHWARREN, near=hatcheries.first)
             return
-        if self.can_afford(EVOLUTIONCHAMBER) and len(self.units(EVOLUTIONCHAMBER)) < 1:
-            await self.build(EVOLUTIONCHAMBER, near=hatcheries.first)
         if self.can_afford(LAIR) and not self.units(LAIR).exists and not self.already_pending(LAIR):
             await self.do(self.townhalls.first.build(LAIR))
             return
@@ -81,45 +75,7 @@ class Legion(sc2.BotAI):
         if self.can_afford(GREATERSPIRE) and self.units(HIVE).ready \
                 and self.units(SPIRE).ready and not self.already_pending(GREATERSPIRE) and not self.units(GREATERSPIRE).exists:
             await self.do(self.units(SPIRE).first.build(GREATERSPIRE))
-    
-    # more succint way of writing this... refactor this!!!
-    # check timing to ensure spire upgrades dont retard others...
-    # incorporate the army specific upgrades for roaches and hydras
-    async def upgrade(self):
-        if self.units(EVOLUTIONCHAMBER).ready.idle.exists:
-             for evo in self.units(EVOLUTIONCHAMBER).ready.idle:
-                abilities = await self.get_available_abilities(evo)
-                targetAbilities = [AbilityId.RESEARCH_ZERGMISSILEWEAPONSLEVEL1, 
-                                   AbilityId.RESEARCH_ZERGMISSILEWEAPONSLEVEL2, 
-                                   AbilityId.RESEARCH_ZERGMISSILEWEAPONSLEVEL3, 
-                                   AbilityId.RESEARCH_ZERGGROUNDARMORLEVEL1, 
-                                   AbilityId.RESEARCH_ZERGGROUNDARMORLEVEL2, 
-                                   AbilityId.RESEARCH_ZERGGROUNDARMORLEVEL3]
-                if self.units(GREATERSPIRE).exists:
-                    targetAbilities.extend([AbilityId.RESEARCH_ZERGMELEEWEAPONSLEVEL1,
-                    AbilityId.RESEARCH_ZERGMELEEWEAPONSLEVEL2,
-                    AbilityId.RESEARCH_ZERGMELEEWEAPONSLEVEL3])
-                for ability in targetAbilities:
-                    if ability in abilities:
-                        if self.can_afford(ability):
-                            err = await self.do(evo(ability))
-                            if not err:
-                                break
 
-        if self.units(GREATERSPIRE).ready.idle.exists:
-            gs = self.units(GREATERSPIRE).ready.idle.random
-            abilities = await self.get_available_abilities(gs)
-            targetAbilities = [AbilityId.RESEARCH_ZERGFLYERATTACKLEVEL1,
-                               AbilityId.RESEARCH_ZERGFLYERATTACKLEVEL2,
-                               AbilityId.RESEARCH_ZERGFLYERATTACKLEVEL3,
-                               AbilityId.RESEARCH_ZERGFLYERARMORLEVEL1,
-                               AbilityId.RESEARCH_ZERGFLYERARMORLEVEL2,
-                               AbilityId.RESEARCH_ZERGFLYERARMORLEVEL3]
-            for ability in targetAbilities:
-                if self.can_afford(ability) and ability in abilities:
-                    err = await self.do(gs(ability))
-                    if not err:
-                        break
 
     # FUTURE: incorporate dynamic composition by either tech level or AI/ML
     async def build_swarm(self):
@@ -131,8 +87,8 @@ class Legion(sc2.BotAI):
 #                        if self.units(CORRUPTOR).amount < 5 and self.can_afford(CORRUPTOR):
 #                           await self.do(larva.train(CORRUPTOR))
 #                           continue
-#                        if self.units(HIVE).ready and self.units(BROODLORD).amount < 5 and self.can_afford(BROODLORD):
- #                          await self.do(self.units(CORRUPTOR).random.train(BROODLORD))
+#                        elif self.units(HIVE).ready and self.units(BROODLORD).amount < 5 and self.can_afford(BROODLORD):
+#                           await self.do(self.units(CORRUPTOR).random.train(BROODLORD))
                         if self.can_afford(MUTALISK) and self.supply_left > 2: # 30 muta = 60 c, possibly set to max cap...
                             await self.do(larva.train(MUTALISK))
                             continue
@@ -144,7 +100,19 @@ class Legion(sc2.BotAI):
 #                       continue
 
     # This could be more succinct...
-                       
+    async def defend(self):
+        for hq in self.townhalls:
+            enemies = self.known_enemy_units.closer_than(25, hq.position)
+            if enemies.exists:
+                if self.units(ROACH).exists:
+                    for unit in self.units(ROACH):
+                        unit.attack(enemies.closest_to(unit.position))
+                if self.units(MUTALISK).exists:
+                    for unit in self.units(MUTALISK):
+                        unit.attack(enemies.closest_to(unit.position))
+                        
+
+
 
 
     #need to consider a separate swarm list in order to allow damaged units to RTB
@@ -155,7 +123,7 @@ class Legion(sc2.BotAI):
     #might have to build a multiswarm architecture for overlords to pass data to mutalisks...
     # investigate periodic reinitialization to break convergance after defeating enemy army...
     async def attack(self, phys_swarm, iteration):
-        if phys_swarm.amount > 3:
+        if phys_swarm.amount > 10:
             orders = []
             # reinitialize swarm if needed
             if phys_swarm.amount > self.swarm_size + 3 or iteration > self.iter_of_last_update + 75:
@@ -179,21 +147,19 @@ class Legion(sc2.BotAI):
             self.logical_swarm.position = self.my_topology.compute_position(self.logical_swarm)
             # Extract positions from above and issue movement/attack orders
             # loop through np array compiling positions and appending them to orders list.
+          
+            wounded_units = phys_swarm.filter(lambda u: u.health_percentage <= .7)
+            phys_swarm = phys_swarm.filter(lambda u: u.health_percentage > .7)
 
-            # I havent seen this behavior....
-#            wounded_units = phys_swarm.filter(lambda u: u.health_percentage <= .7)
-#            phys_swarm = phys_swarm.filter(lambda u: u.health_percentage > .7)
-
-#            for unit in wounded_units:
-#                unit.move(self.townhalls.first.position)
-#                print("Retreating wounded unit")
+            for unit in wounded_units:
+                unit.move(self.townhalls.first.position)
 
             # The mutas are still ignoring nearby enemies.
             for row, unit in zip(self.logical_swarm.position, phys_swarm):
                 if self.known_enemy_units.closer_than(unit.radar_range, unit.position).exists:
                     orders.append(unit.stop())
                     orders.append(unit.attack(self.known_enemy_units.closest_to(unit.position).position))
-                elif self.known_enemy_units.closer_than(20, Point2(Pointlike((row[0], row[1])))).exists:
+                elif self.known_enemy_units.exists:
                     orders.append(unit.attack(self.known_enemy_units.closest_to(Point2(Pointlike((row[0], row[1]))))))
                 else:
                     orders.append(unit.move(Point2(Pointlike((row[0], row[1])))))
@@ -212,9 +178,8 @@ class Legion(sc2.BotAI):
             for logical_pos in logical_swarm_pos:
                 target_point = Point2(Pointlike((logical_pos[0], logical_pos[1])))
                 cost.append( \
-                        (1-(10/phys_swarm.amount))*self.known_enemy_units.closest_distance_to(target_point) + \
-                        (10/phys_swarm.amount)*self.townhalls.first.distance_to(target_point) + \
-                        (2 * self.known_enemy_units.closer_than(10, target_point).amount - phys_swarm.closer_than(10, target_point).amount) \
+                        self.known_enemy_units.closest_distance_to(target_point) + \
+                        (5 * self.known_enemy_units.closer_than(10, target_point).amount - 5 * phys_swarm.closer_than(10, target_point).amount) \
                         )
         else:
             for logical_pos in logical_swarm_pos:
@@ -222,6 +187,7 @@ class Legion(sc2.BotAI):
         return np.array(cost)
 
     # Economic Functions
+    # Theres a bug resulting in overproduction of overlords and workers as well as 2 extra expansions....
 
     async def build_workers(self):
         for larva in self.units(LARVA).ready.noqueue:    
